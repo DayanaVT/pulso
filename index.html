@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eventos del Botón ESP32</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; }
+    th, td { padding: 10px; text-align: center; border: 1px solid #ccc; }
+    th { background-color: #009578; color: white; }
+    button { padding: 10px 15px; background-color: #009578; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #007f63; }
+  </style>
+</head>
+<body>
+  <h1>Eventos recibidos desde ESP32</h1>
+  <button onclick="cargarEventos()">Actualizar tabla</button>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Botón</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody id="tablaEventos"></tbody>
+  </table>
+
+  <script>
+    async function cargarEventos() {
+      const respuesta = await fetch('http://localhost:3000/api/evento');
+      const eventos = await respuesta.json();
+      const tabla = document.getElementById('tablaEventos');
+      tabla.innerHTML = '';
+      eventos.forEach((evento, index) => {
+        const fila = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${evento.boton}</td>
+            <td>${evento.timestamp}</td>
+          </tr>
+        `;
+        tabla.innerHTML += fila;
+      });
+    }
+
+    window.onload = cargarEventos;
+  </script>
+</body>
+</html>
